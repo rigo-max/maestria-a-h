@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interior Clinic — Maestría en Arquitectura Hospitalaria</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0c0f;
+  --surface: #111318;
+  --card: #161a22;
+  --border: #1e2430;
+  --accent: #c8001a;
+  --accent2: #e8b84b;
+  --text: #e8eaf0;
+  --muted: #6b7280;
+  --soft: #9ca3af;
+  --green: #22c55e;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;overflow-x:hidden;}
+
+/* ── SIDEBAR ── */
+#sidebar {
+  position: fixed;
+  top:0;left:0;bottom:0;
+  width:280px;
+  background:var(--surface);
+  border-right:1px solid var(--border);
+  z-index:200;
+  display:flex;
+  flex-direction:column;
+  transition: transform 0.3s ease;
+  overflow-y:auto;
+}
+.sidebar-logo {
+  padding:28px 24px 20px;
+  border-bottom:1px solid var(--border);
+}
+.sidebar-logo .brand {
+  font-family:'Cormorant Garamond',serif;
+  font-size:20px;
+  font-weight:600;
+  letter-spacing:0.5px;
+  margin-bottom:4px;
+}
+.sidebar-logo .brand span{color:var(--accent);}
+.sidebar-logo .sub {
+  font-family:'Space Mono',monospace;
+  font-size:9px;
+  letter-spacing:2px;
+  color:var(--muted);
+  text-transform:uppercase;
+}
+.sidebar-nav { flex:1; padding:16px 0; }
+.nav-section-label {
+  font-family:'Space Mono',monospace;
+  font-size:8px;
+  letter-spacing:2.5px;
+  text-transform:uppercase;
+  color:var(--muted);
+  padding:12px 24px 6px;
+}
+.nav-item {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:10px 24px;
+  cursor:pointer;
+  transition:all 0.2s;
+  border-left:3px solid transparent;
+  text-decoration:none;
+  color:var(--soft);
+}
+.nav-item:hover { background:rgba(200,0,26,0.06); color:var(--text); border-left-color:rgba(200,0,26,0.3); }
+.nav-item.active { background:rgba(200,0,26,0.1); color:var(--text); border-left-color:var(--accent); }
+.nav-item .num {
+  font-family:'Space Mono',monospace;
+  font-size:9px;
+  color:var(--accent);
+  opacity:0.7;
+  min-width:24px;
+}
+.nav-item .title { font-size:12px; line-height:1.3; }
+
+/* ── MAIN ── */
+#main {
+  margin-left:280px;
+  min-height:100vh;
+}
+
+/* ── TOP BAR ── */
+#topbar {
+  position:sticky;
+  top:0;
+  background:rgba(10,12,15,0.95);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  padding:0 48px;
+  height:60px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  z-index:100;
+}
+.topbar-left {
+  font-family:'Space Mono',monospace;
+  font-size:10px;
+  letter-spacing:1.5px;
+  color:var(--muted);
+  text-transform:uppercase;
+}
+.topbar-left span { color:var(--accent2); }
+
+/* ── VOICE BAR ── */
+.voice-bar{
+  position:fixed;bottom:0;left:280px;right:0;
+  background:#060a0d;border-top:1px solid var(--border);
+  padding:10px 32px;display:flex;align-items:center;gap:14px;
+  z-index:1000;box-shadow:0 -4px 24px rgba(0,0,0,.6);
+}
+.voice-icon{font-size:20px;}
+.voice-icon.speaking{animation:speakPulse .8s infinite alternate;}
+@keyframes speakPulse{from{transform:scale(1);filter:brightness(1);}to{transform:scale(1.2);filter:brightness(1.6);}}
+.vb-label{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;min-width:80px;}
+.voice-preview{flex:1;font-size:12px;color:var(--soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-style:italic;}
+.voice-controls{display:flex;align-items:center;gap:8px;}
+.vb-btn{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:6px 14px;color:var(--soft);font-family:'Space Mono',monospace;font-size:11px;cursor:pointer;transition:all .2s;letter-spacing:.5px;}
+.vb-btn:hover{border-color:var(--accent);color:var(--accent);}
+.vb-btn.active{background:rgba(200,0,26,.15);border-color:var(--accent);color:var(--accent);}
+.vb-btn.stop-btn:hover{border-color:var(--accent2);color:var(--accent2);}
+.voice-speed{display:flex;align-items:center;gap:6px;font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);}
+.voice-speed input[type=range]{width:70px;accent-color:var(--accent);}
+.vb-toggle{background:none;border:1px solid var(--border);border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);font-size:14px;transition:all .2s;}
+.vb-toggle:hover{border-color:var(--accent2);color:var(--accent2);}
+@media(max-width:900px){.voice-bar{left:0;}.voice-speed{display:none;}}
+
+/* ── PROGRESS BAR ── */
+#progress-bar {
+  height:2px;
+  background:var(--border);
+  position:relative;
+}
+#progress-fill {
+  height:100%;
+  background:var(--accent);
+  transition:width 0.5s ease;
+  width:0%;
+}
+
+/* ── PAGE SECTIONS ── */
+.page-section {
+  display:none;
+  padding:64px 48px 100px;
+  max-width:1000px;
+  animation:fadeIn 0.4s ease;
+}
+.page-section.active { display:block; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+
+/* ── HERO PAGE ── */
+.hero-page {
+  min-height:calc(100vh - 62px);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  padding:80px 48px 100px;
+}
+.badge-pill {
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  background:rgba(200,0,26,0.12);
+  border:1px solid rgba(200,0,26,0.3);
+  color:var(--accent);
+  font-family:'Space Mono',monospace;
+  font-size:9px;
+  letter-spacing:2px;
+  padding:6px 14px;
+  border-radius:2px;
+  margin-bottom:32px;
+  text-transform:uppercase;
+}
+.badge-pill::before{content:'●';font-size:7px;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+.hero-title {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(48px,6vw,80px);
+  font-weight:300;
+  line-height:1.0;
+  letter-spacing:-1px;
+  margin-bottom:12px;
+}
+.hero-title em { font-style:italic; color:var(--accent); }
+.hero-subtitle {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(18px,2.5vw,26px);
+  font-weight:300;
+  color:var(--accent2);
+  margin-bottom:28px;
+}
+.hero-desc {
+  font-size:15px;
+  line-height:1.9;
+  color:var(--soft);
+  max-width:600px;
+  margin-bottom:48px;
+  border-left:2px solid var(--accent);
+  padding-left:20px;
+}
+.stats-row {
+  display:flex;
+  gap:1px;
+  background:var(--border);
+  border:1px solid var(--border);
+  border-radius:4px;
+  overflow:hidden;
+  width:fit-content;
+  margin-bottom:48px;
+}
+.stat {
+  background:var(--card);
+  padding:20px 32px;
+  text-align:center;
+}
+.stat-n {
+  font-family:'Space Mono',monospace;
+  font-size:28px;
+  font-weight:700;
+  color:var(--accent);
+  display:block;
+}
+.stat-l {
+  font-size:10px;
+  color:var(--muted);
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+  margin-top:4px;
+}
+.btn-start {
+  background:var(--accent);
+  color:white;
+  border:none;
+  padding:16px 40px;
+  font-family:'Space Mono',monospace;
+  font-size:11px;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  cursor:pointer;
+  border-radius:2px;
+  transition:all 0.2s;
+}
+.btn-start:hover{background:#a00015;transform:translateY(-1px);}
+
+/* ── SECTION TYPOGRAPHY ── */
+.section-tag {
+  font-family:'Space Mono',monospace;
+  font-size:9px;
+  letter-spacing:3px;
+  text-transform:uppercase;
+  color:var(--accent);
+  margin-bottom:12px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.section-tag::after{content:'';width:40px;height:1px;background:var(--accent);}
+.section-title {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(32px,4vw,52px);
+  font-weight:300;
+  line-height:1.1;
+  margin-bottom:8px;
+}
+.section-title strong { font-weight:600; color:var(--accent2); }
+.section-intro {
+  font-size:15px;
+  line-height:1.9;
+  color:var(--soft);
+  max-width:720px;
+  margin-bottom:40px;
+  border-left:2px solid var(--border);
+  padding-left:20px;
+}
+
+/* ── CONTENT BLOCKS ── */
+.content-block {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:4px;
+  padding:32px;
+  margin-bottom:24px;
+}
+.content-block h3 {
+  font-family:'Cormorant Garamond',serif;
+  font-size:24px;
+  font-weight:600;
+  margin-bottom:16px;
+  color:var(--text);
+  border-bottom:1px solid var(--border);
+  padding-bottom:12px;
+}
+.content-block h4 {
+  font-size:14px;
+  font-weight:600;
+  color:var(--accent2);
+  margin:20px 0 8px;
+  text-transform:uppercase;
+  letter-spacing:0.5px;
+}
+.content-block p {
+  font-size:14px;
+  color:var(--soft);
+  line-height:1.9;
+  margin-bottom:12px;
+}
+.content-block ul, .content-block ol {
+  margin-left:20px;
+  margin-bottom:12px;
+}
+.content-block li {
+  font-size:14px;
+  color:var(--soft);
+  line-height:1.8;
+  margin-bottom:4px;
+}
+.content-block li::marker { color:var(--accent); }
+
+.highlight-box {
+  background:rgba(200,0,26,0.06);
+  border:1px solid rgba(200,0,26,0.2);
+  border-left:3px solid var(--accent);
+  padding:20px 24px;
+  border-radius:2px;
+  margin:20px 0;
+}
+.highlight-box p { color:var(--text); font-size:14px; line-height:1.8; margin:0; }
+
+.info-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+  gap:12px;
+  margin:20px 0;
+}
+.info-card {
+  background:var(--surface);
+  border:1px solid var(--border);
+  padding:16px;
+  border-radius:4px;
+}
+.info-card .ic-label {
+  font-family:'Space Mono',monospace;
+  font-size:9px;
+  letter-spacing:2px;
+  color:var(--accent);
+  text-transform:uppercase;
+  margin-bottom:6px;
+}
+.info-card .ic-val {
+  font-size:13px;
+  color:var(--text);
+  line-height:1.5;
+}
+
+.norm-tag {
+  display:inline-block;
+  background:rgba(232,184,75,0.1);
+  border:1px solid rgba(232,184,75,0.3);
+  color:var(--accent2);
+  font-family:'Space Mono',monospace;
+  font-size:9px;
+  letter-spacing:1.5px;
+  padding:3px 8px;
+  border-radius:2px;
+  margin:2px;
+}
+
+/* ── MODULE HEADER ── */
+.module-header {
+  display:flex;
+  align-items:flex-start;
+  gap:24px;
+  margin-bottom:40px;
+  padding:32px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:4px;
+  border-left:4px solid var(--accent);
+}
+.module-num-big {
+  font-family:'Space Mono',monospace;
+  font-size:48px;
+  font-weight:700;
+  color:var(--accent);
+  opacity:0.3;
+  line-height:1;
+  min-width:80px;
+}
+.module-meta .tag {
+  font-family:'Space Mono',monospace;
+  font-size:9px;
+  letter-spacing:2px;
+  color:var(--accent);
+  text-transform:uppercase;
+  margin-bottom:8px;
+}
+.module-meta h2 {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(24px,3vw,38px);
+  font-weight:300;
+  margin-bottom:8px;
+}
+.module-meta p {
+  font-size:13px;
+  color:var(--muted);
+  line-height:1.7;
+  max-width:560px;
+}
+
+/* ── NAV BUTTONS ── */
+.nav-buttons {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-top:48px;
+  padding-top:32px;
+  border-top:1px solid var(--border);
+}
+.nav-btn {
+  display:flex;
+  align-items:center;
+  gap:8px;
+  background:var(--card);
+  border:1px solid var(--border);
+  color:var(--soft);
+  padding:12px 24px;
+  font-family:'Space Mono',monospace;
+  font-size:10px;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+  cursor:pointer;
+  border-radius:2px;
+  transition:all 0.2s;
+}
+.nav-btn:hover { border-color:var(--accent); color:var(--text); }
+.nav-btn.next { background:var(--accent); border-color:var(--accent); color:white; }
+.nav-btn.next:hover { background:#a00015; }
+.nav-btn:disabled { opacity:0.3; cursor:not-allowed; }
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  #sidebar{transform:translateX(-100%);}
+  #sidebar.open{transform:translateX(0);}
+  #main{margin-left:0;}
+  .page-section{padding:48px 24px;}
+  .hero-page{padding:60px 24px;}
+  #topbar{padding:0 24px;}
+  .stats-row{flex-wrap:wrap;}
+}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav id="sidebar">
+  <div class="sidebar-logo">
+    <div class="brand">Interior<span>Clinic</span></div>
+    <div class="sub">Maestría · Arquitectura Hospitalaria</div>
+  </div>
+  <div class="sidebar-nav">
+    <div class="nav-section-label">Inicio</div>
+    <a class="nav-item active" onclick="showPage('page-home',this)">
+      <span class="num">00</span>
+      <span class="title">Presentación del Programa</span>
+    </a>
+    <div class="nav-section-label">Módulos del Curso</div>
+    <a class="nav-item" onclick="showPage('page-m1',this)">
+      <span class="num">01</span>
+      <span class="title">Fundamentos y Normativa Hospitalaria</span>
+    </a>
+    <a class="nav-item" onclick="showPage('page-m2',this)">
+      <span class="num">02</span>
+      <span class="title">Planificación y Programación Arquitectónica</span>
+    </a>
+    <a class="nav-item" onclick="showPage('page-m3',this)">
+      <span class="num">03</span>
+      <span class="title">Diseño de Unidades Funcionales</span>
+    </a>
+    <a class="nav-item" onclick="showPage('page-m4',this)">
+      <span class="num">04</span>
+      <span class="title">Sistemas MEP Hospitalarios</span>
+    </a>
+    <a class="nav-item" onclick="showPage('page-m5',this)">
+      <span class="num">05</span>
+      <span class="title">Humanización y Diseño Centrado en el Paciente</span>
+    </a>
+    <a class="nav-item" onclick="showPage('page-m6',this)">
+      <span class="num">06</span>
+      <span class="title">BIM y Tecnología en Salud</span>
+    </a>
+    <a class="nav-item" onclick="showPage('page-m7',this)">
+      <span class="num">07</span>
+      <span class="title">Gestión y Dirección de Proyectos</span>
+    </a>
+    <a class="nav-item" onclick="showPage('page-m8',this)">
+      <span class="num">08</span>
+      <span class="title">Proyecto Integrador Final</span>
+    </a>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div id="main">
+
+  <!-- TOP BAR -->
+  <div id="topbar">
+    <div class="topbar-left">Interior Clinic — <span>Maestría en Arquitectura Hospitalaria</span></div>
+  </div>
+  <div id="progress-bar"><div id="progress-fill"></div></div>
+
+  <!-- ══════════════════════════════════════════
+       PAGE 0 — PRESENTACIÓN
+  ══════════════════════════════════════════ -->
+  <div class="page-section active hero-page" id="page-home">
+    <div class="badge-pill">Maestría — Nivel Avanzado — 92 SATCA</div>
+    <h1 class="hero-title">Maestría en<br><em>Arquitectura</em><br>Hospitalaria</h1>
+    <p class="hero-subtitle">Diseño, Organización y Gestión</p>
+    <p class="hero-desc">
+      Programa de posgrado que forma profesionales capaces de diseñar, planificar y gestionar infraestructuras hospitalarias de alto rendimiento, integrando la normativa técnica peruana, las tecnologías emergentes y la gestión eficiente de recursos para transformar el ecosistema de la salud desde la arquitectura.
+    </p>
+    <div class="stats-row">
+      <div class="stat"><span class="stat-n">20</span><span class="stat-l">Meses</span></div>
+      <div class="stat"><span class="stat-n">92</span><span class="stat-l">Créditos SATCA</span></div>
+      <div class="stat"><span class="stat-n">8</span><span class="stat-l">Módulos</span></div>
+      <div class="stat"><span class="stat-n">100%</span><span class="stat-l">Online</span></div>
+    </div>
+    <button class="btn-start" onclick="showPage('page-m1', document.querySelectorAll('.nav-item')[1])">Comenzar el Curso →</button>
+    <div class="nav-buttons">
+      <div></div>
+      <button class="nav-btn next" onclick="showPage('page-m1', document.querySelectorAll('.nav-item')[1])">Módulo 01 →</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       MÓDULO 01 — FUNDAMENTOS Y NORMATIVA
+  ══════════════════════════════════════════ -->
+  <div class="page-section" id="page-m1">
+    <div class="module-header">
+      <div class="module-num-big">01</div>
+      <div class="module-meta">
+        <div class="tag">Módulo 01 · Fundamentos</div>
+        <h2>Fundamentos y Normativa Hospitalaria</h2>
+        <p>Marco teórico, histórico y regulatorio que sustenta el diseño de infraestructura hospitalaria en el Perú y el contexto latinoamericano.</p>
+      </div>
+    </div>
+
+    <div class="content-block">
+      <h3>1.1 — Historia y Evolución del Hospital</h3>
+      <p>El concepto de hospital ha experimentado una transformación radical a lo largo de la historia humana. En sus orígenes, los espacios de atención médica eran esencialmente caritativos: los hospitales medievales europeos, como el Hôtel-Dieu de París fundado en el siglo VII, funcionaban como albergues para enfermos pobres y peregrinos, administrados por órdenes religiosas. La arquitectura de estos espacios respondía más a criterios simbólicos y de piedad que a exigencias sanitarias.</p>
+      <p>La revolución científica del siglo XIX transformó profundamente esta concepción. Los trabajos de Florence Nightingale durante la Guerra de Crimea (1853-1856) demostraron empíricamente que la ventilación natural, la iluminación solar y la limpieza de los espacios reducían dramáticamente la mortalidad hospitalaria. Su modelo del <em>pabellón abierto</em> —grandes salas bien ventiladas con acceso a luz natural— se convirtió en el paradigma arquitectónico dominante hasta bien entrado el siglo XX.</p>
+      <div class="highlight-box">
+        <p>El modelo Nightingale sentó las bases del pensamiento higienista en arquitectura hospitalaria: el espacio físico como agente terapéutico activo. Este principio permanece vigente en los estándares contemporáneos de humanización del entorno hospitalario.</p>
+      </div>
+      <p>El siglo XX trajo la especialización médica y con ella la fragmentación del programa arquitectónico. El hospital monobloque vertical, surgido en los años 1950-1970, concentraba en una sola torre todos los servicios: consulta externa, urgencias, cirugía, hospitalización y servicios de apoyo. Este modelo permitía economías de escala pero generaba grandes distancias funcionales y dificultaba la ampliación futura. En el Perú, el Hospital Loayza (1940) y el Hospital del Empleado —hoy Hospital Rebagliati (1958)— representan distintas etapas de esta evolución.</p>
+      <p>En las décadas de 1980 a 2000, el modelo de <strong>hospital de baja altura y gran planta</strong> ganó terreno, favoreciendo la circulación horizontal, la expansión modular y la reducción de costos de construcción y mantenimiento. Hoy, el paradigma emergente es el <em>hospital inteligente y flexible</em>: infraestructuras diseñadas para adaptarse, que integran tecnología digital, robótica, telemedicina y diseño centrado en la evidencia.</p>
+    </div>
+
+    <div class="content-block">
+      <h3>1.2 — Clasificación de Establecimientos de Salud en el Perú</h3>
+      <p>En el Perú, el sistema de establecimientos de salud se organiza según la Norma Técnica de Salud N° 021-MINSA/DGIEM-V.03, que establece la categorización por niveles de complejidad y capacidad resolutiva. Esta clasificación es fundamental para el arquitecto, ya que determina el programa arquitectónico mínimo exigido y las especificaciones técnicas aplicables.</p>
+      <div class="info-grid">
+        <div class="info-card"><div class="ic-label">I-1 / I-2</div><div class="ic-val">Puestos de salud. Atención primaria básica. Sin internamiento.</div></div>
+        <div class="info-card"><div class="ic-label">I-3 / I-4</div><div class="ic-val">Centros de salud. Atención médica general. Pueden tener camas de observación.</div></div>
+        <div class="info-card"><div class="ic-label">II-1 / II-2</div><div class="ic-val">Hospitales de mediana complejidad. Especialidades básicas. UCI, cirugía general, obstetricia.</div></div>
+        <div class="info-card"><div class="ic-label">III-1 / III-2</div><div class="ic-val">Hospitales de alta complejidad. Subespecialidades. Trasplantes, neurocirugía, oncología compleja.</div></div>
+        <div class="info-card"><div class="ic-label">III-E</div><div class="ic-val">Institutos especializados nacionales (INCN, INEN, INS). Referencia nacional.</div></div>
+      </div>
+      <p>Esta clasificación impacta directamente en el diseño porque cada categoría tiene requisitos específicos de áreas mínimas por unidad funcional, dotación de camas, número de salas de operaciones, equipamiento y sistemas MEP. El arquitecto debe conocer con precisión estos requerimientos desde la fase de programación arquitectónica.</p>
+      <h4>Documentos Normativos Clave</h4>
+      <p>El diseño hospitalario en el Perú se rige por un conjunto articulado de normas técnicas que el especialista debe dominar:</p>
+      <div>
+        <span class="norm-tag">NTS N°021-MINSA</span>
+        <span class="norm-tag">NTS N°110-MINSA</span>
+        <span class="norm-tag">RNE A.050</span>
+        <span class="norm-tag">NTS N°119-MINSA (UCI)</span>
+        <span class="norm-tag">NTS N°113-MINSA (Cirugía)</span>
+        <span class="norm-tag">DS 015-2014 (Sismo)</span>
+        <span class="norm-tag">OPS/OMS</span>
+        <span class="norm-tag">ASHRAE 170</span>
+        <span class="norm-tag">NFPA 99 / 101</span>
+      </div>
+    </div>
+
+    <div class="content-block">
+      <h3>1.3 — Principios Fundamentales del Diseño Hospitalario</h3>
+      <h4>Seguridad y Resiliencia</h4>
+      <p>El hospital es una infraestructura crítica que debe permanecer operativa ante desastres naturales. En el Perú, país de alta sismicidad, la normativa DS N°015-2014-SA exige que los hospitales sean diseñados como estructuras de categoría A (esenciales), lo que implica factores de uso U=1.5 y criterios especiales de aislamiento basal en zonas sísmicas críticas. El concepto de <em>hospital seguro</em> promovido por la OPS/OMS trasciende la estructura: incluye los sistemas no estructurales (equipos, instalaciones, mobiliario) y la organización funcional ante emergencias.</p>
+      <h4>Funcionalidad y Eficiencia</h4>
+      <p>Un hospital eficiente minimiza las distancias entre unidades funcionalmente relacionadas, segrega los flujos de circulación (pacientes, personal, materiales limpios y sucios, visitantes) y organiza el programa en zonas de acceso diferenciado. La <strong>matriz de relaciones funcionales</strong> es la herramienta metodológica central en la etapa de programación arquitectónica.</p>
+      <h4>Flexibilidad y Expansibilidad</h4>
+      <p>El hospital contemporáneo debe poder adaptarse a cambios tecnológicos, epidemiológicos y organizativos sin comprometer su funcionamiento. Esto exige estructuras con modulación geométrica, instalaciones accesibles y sobredimensionadas, y espacios neutros convertibles. El concepto de <em>hospital interflexible</em>, desarrollado por la OPS, propone que el 60-70% del programa sea de uso adaptable.</p>
+      <h4>Humanización</h4>
+      <p>El entorno físico influye directamente en la recuperación del paciente, en el desempeño del personal y en la experiencia del visitante. Los estudios de <em>evidence-based design</em> demuestran que el acceso a luz natural, la reducción del ruido, la incorporación de naturaleza y la claridad orientativa del espacio reducen el estrés, los errores médicos y los tiempos de hospitalización.</p>
+      <div class="highlight-box">
+        <p>El arquitecto hospitalario no diseña solo edificios: diseña entornos terapéuticos. Cada decisión espacial —desde la orientación de una ventana hasta el color de un corredor— tiene consecuencias clínicas medibles.</p>
+      </div>
+    </div>
+
+    <div class="content-block">
+      <h3>1.4 — El Rol del Arquitecto en el Equipo de Salud</h3>
+      <p>El diseño de un hospital es un proceso multidisciplinario que involucra a médicos, enfermeros, ingenieros de instalaciones, gestores hospitalarios, epidemiólogos, especialistas en seguridad y, de manera central, al arquitecto. El arquitecto hospitalario actúa como integrador: traduce el programa médico-funcional en espacio construido, coordinando los requerimientos de todos los actores.</p>
+      <p>En el contexto peruano, el proyectista debe articular su trabajo con el equipo técnico del MINSA (DGIEM - Dirección General de Infraestructura, Equipamiento y Mantenimiento), que revisa y aprueba los proyectos de establecimientos de salud públicos. Para el sector privado, los proyectos deben cumplir con el Reglamento Nacional de Edificaciones (RNE), específicamente la Norma A.050 (Salud).</p>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="nav-btn" onclick="showPage('page-home', document.querySelectorAll('.nav-item')[0])">← Inicio</button>
+      <button class="nav-btn next" onclick="showPage('page-m2', document.querySelectorAll('.nav-item')[2])">Módulo 02 →</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       MÓDULO 02 — PLANIFICACIÓN Y PROGRAMACIÓN
+  ══════════════════════════════════════════ -->
+  <div class="page-section" id="page-m2">
+    <div class="module-header">
+      <div class="module-num-big">02</div>
+      <div class="module-meta">
+        <div class="tag">Módulo 02 · Planificación</div>
+        <h2>Planificación y Programación Arquitectónica</h2>
+        <p>Metodología para la determinación del programa médico-arquitectónico, análisis de demanda, dimensionamiento y organización funcional del conjunto hospitalario.</p>
+      </div>
+    </div>
+
+    <div class="content-block">
+      <h3>2.1 — Estudio de Demanda y Diagnóstico Situacional</h3>
+      <p>Todo proyecto hospitalario comienza con un análisis riguroso de la demanda de salud en el área de influencia. Este diagnóstico determina la capacidad instalada necesaria y, por tanto, el programa arquitectónico del establecimiento. En el Perú, la metodología oficial está desarrollada en los documentos técnicos del MINSA para la elaboración del <em>Expediente Técnico de Infraestructura de Salud</em>.</p>
+      <h4>Variables del Análisis de Demanda</h4>
+      <ul>
+        <li><strong>Población de referencia:</strong> Universo de personas que el establecimiento tiene capacidad de atender, según su nivel de complejidad y área geográfica de cobertura.</li>
+        <li><strong>Perfil epidemiológico:</strong> Principales causas de morbilidad y mortalidad en el área. Determina la especialización clínica requerida.</li>
+        <li><strong>Producción histórica:</strong> Registro de consultas, egresos hospitalarios, intervenciones quirúrgicas y partos de los últimos 5 años en establecimientos existentes.</li>
+        <li><strong>Brecha de atención:</strong> Diferencia entre la demanda potencial y la oferta actual de servicios. Justifica la inversión en nueva infraestructura.</li>
+        <li><strong>Proyección de demanda:</strong> Estimación de la demanda futura a 10, 20 y 30 años, considerando crecimiento poblacional, envejecimiento, transición epidemiológica y cambios tecnológicos.</li>
+      </ul>
+    </div>
+
+    <div class="content-block">
+      <h3>2.2 — Programa Médico-Arquitectónico (PMA)</h3>
+      <p>El Programa Médico-Arquitectónico es el documento técnico que define con precisión el conjunto de ambientes, áreas y características que debe tener el establecimiento de salud para cumplir su misión asistencial. Es el puente entre el programa médico (qué servicios se prestarán) y el programa arquitectónico (qué espacios se necesitan).</p>
+      <div class="highlight-box">
+        <p>El PMA no es una lista de ambientes: es la traducción espacial de un modelo de atención. Antes de diseñar cualquier espacio, el arquitecto debe comprender profundamente cómo funciona clínicamente cada unidad y cómo se relaciona con el resto del hospital.</p>
+      </div>
+      <h4>Componentes del PMA</h4>
+      <ol>
+        <li><strong>Listado de unidades funcionales</strong> y su interrelación jerárquica.</li>
+        <li><strong>Programa de ambientes</strong> por unidad: nombre, cantidad, área por ambiente, área total.</li>
+        <li><strong>Índices de rendimiento:</strong> Camas/médico, consultorios/médico, quirófanos/camas.</li>
+        <li><strong>Dotación de camas</strong> por especialidad, calculada según estándares OPS.</li>
+        <li><strong>Equipamiento orientativo</strong> para dimensionar instalaciones técnicas.</li>
+        <li><strong>Cuadro de áreas resumen</strong> con área construida total y por unidad.</li>
+      </ol>
+      <h4>Estándares de Dotación de Camas</h4>
+      <p>La OPS recomienda para países en desarrollo una tasa de 1.5 a 3 camas por cada 1,000 habitantes. En el Perú, la tasa promedio es de 1.6 camas/1,000 hab., significativamente inferior al promedio de la OCDE (4.7/1,000). Esta brecha representa una oportunidad de inversión y diseño hospitalario sin precedentes en el país.</p>
+    </div>
+
+    <div class="content-block">
+      <h3>2.3 — Organización Funcional del Hospital</h3>
+      <p>La organización funcional define cómo se agrupan y relacionan las distintas unidades del hospital en el espacio. Existen dos grandes paradigmas de organización:</p>
+      <h4>Modelo Monobloque o Compacto</h4>
+      <p>Concentra todas las unidades en un único edificio, generalmente vertical. Ventajas: menor recorrido entre unidades relacionadas, economía en instalaciones. Desventajas: dificultad de expansión, dependencia de ascensores, mayor complejidad estructural. Indicado para terrenos de área reducida en zonas urbanas densas.</p>
+      <h4>Modelo Disperso o de Pabellones</h4>
+      <p>Distribuye las unidades en edificios independientes o semiindependientes conectados por galerías cubiertas. Ventajas: mayor flexibilidad de expansión, mejor ventilación e iluminación natural, menores costos de construcción. Desventajas: mayores recorridos, duplicación de algunos servicios. Indicado para terrenos amplios en zonas periurbanas o rurales.</p>
+      <h4>Modelo Mixto</h4>
+      <p>Combina un núcleo compacto (servicios críticos y de alta tecnología: cirugía, UCI, laboratorio, imágenes) con bloques independientes para servicios de menor complejidad (consulta externa, hospitalización, servicios de apoyo). Es el modelo más frecuente en hospitales peruanos de mediana y alta complejidad contemporáneos.</p>
+      <h4>Zonificación Funcional</h4>
+      <p>Independientemente del modelo adoptado, el hospital se organiza en cuatro grandes zonas:</p>
+      <div class="info-grid">
+        <div class="info-card"><div class="ic-label">Zona de Acceso Público</div><div class="ic-val">Consulta externa, emergencias, admisión, servicios generales al público.</div></div>
+        <div class="info-card"><div class="ic-label">Zona Semirrestringida</div><div class="ic-val">Hospitalización, servicios de apoyo clínico (laboratorio, imágenes, farmacia).</div></div>
+        <div class="info-card"><div class="ic-label">Zona Restringida</div><div class="ic-val">Cirugía, UCI, neonatología, partos, esterilización central.</div></div>
+        <div class="info-card"><div class="ic-label">Zona de Servicios Generales</div><div class="ic-val">Lavandería, cocina, central de gases, almacenes, mantenimiento.</div></div>
+      </div>
+    </div>
+
+    <div class="content-block">
+      <h3>2.4 — Circulaciones y Flujos Hospitalarios</h3>
+      <p>El sistema de circulaciones es uno de los aspectos más críticos del diseño hospitalario. Un hospital genera múltiples tipos de flujos que deben ser claramente segregados para garantizar la seguridad clínica, la eficiencia operativa y el control de infecciones.</p>
+      <h4>Tipos de Flujo</h4>
+      <ul>
+        <li><strong>Pacientes ambulatorios:</strong> Acceso desde el exterior, circulación por consulta externa y servicios diagnósticos. Alta frecuencia, debe ser fluida y señalizada.</li>
+        <li><strong>Pacientes internados:</strong> Circulación en camillas y sillas de ruedas, con acceso a hospitalización, cirugía y servicios diagnósticos. Requiere ascensores de grandes dimensiones.</li>
+        <li><strong>Personal:</strong> Accesos diferenciados, vestuarios, pasillos de servicio. Debe minimizar interferencias con circuitos de pacientes.</li>
+        <li><strong>Material limpio:</strong> Insumos, medicamentos, ropa limpia, equipos. Circulación desde almacenes y esterilización hacia las unidades clínicas.</li>
+        <li><strong>Material sucio / residuos:</strong> Ropa sucia, residuos sólidos hospitalarios, material contaminado. Circulación hacia zonas de procesamiento y salida. Debe ser completamente segregada del material limpio.</li>
+        <li><strong>Visitas:</strong> Acceso controlado a hospitalización en horarios determinados.</li>
+      </ul>
+      <div class="highlight-box">
+        <p>El principio universal del diseño hospitalario es que los flujos limpios y sucios nunca deben cruzarse. La violación de este principio tiene consecuencias clínicas directas: aumento de infecciones asociadas a la atención de salud (IAAS), que en el Perú representan entre el 5-10% de los pacientes hospitalizados.</p>
+      </div>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="nav-btn" onclick="showPage('page-m1', document.querySelectorAll('.nav-item')[1])">← Módulo 01</button>
+      <button class="nav-btn next" onclick="showPage('page-m3', document.querySelectorAll('.nav-item')[3])">Módulo 03 →</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       MÓDULO 03 — DISEÑO DE UNIDADES FUNCIONALES
+  ══════════════════════════════════════════ -->
+  <div class="page-section" id="page-m3">
+    <div class="module-header">
+      <div class="module-num-big">03</div>
+      <div class="module-meta">
+        <div class="tag">Módulo 03 · Diseño Clínico</div>
+        <h2>Diseño de Unidades Funcionales</h2>
+        <p>Criterios técnicos específicos para el diseño de las principales unidades clínicas y de apoyo del hospital, conforme a la normativa MINSA vigente.</p>
+      </div>
+    </div>
+
+    <div class="content-block">
+      <h3>3.1 — Unidad de Emergencias</h3>
+      <p>La Unidad de Emergencias es la puerta crítica del hospital. Su diseño debe garantizar la recepción y estabilización de pacientes en estado crítico con la máxima rapidez y eficiencia. Según la NTS N°042-MINSA/DGSP-V.01, toda emergencia hospitalaria debe contar con acceso vehicular directo, zona de triage claramente diferenciada y área de reanimación de acceso inmediato.</p>
+      <h4>Componentes Esenciales</h4>
+      <ul>
+        <li><strong>Acceso y porche de ambulancias:</strong> Cubierto, con pendiente máxima del 2%, ancho mínimo de 6 m para maniobras simultáneas de dos ambulancias.</li>
+        <li><strong>Triage:</strong> Primera evaluación del paciente. Debe ser visible desde el acceso peatonal y vehicular. Área mínima: 12 m². Sistema de clasificación SETAG o Manchester.</li>
+        <li><strong>Sala de Espera Diferenciada:</strong> Separada para acompañantes. Debe tener servicios higiénicos, señalética clara y visibilidad hacia el módulo de información.</li>
+        <li><strong>Box de Atención:</strong> Área mínima de 9 m² por box. Separación con cortinas o mamparas. Al menos 1 box adaptado para personas con discapacidad.</li>
+        <li><strong>Sala de Reanimación (Shock-Trauma):</strong> 20-25 m² por camilla. Acceso directo desde el porche de ambulancias. Instalaciones para monitoreo, ventilación mecánica y procedimientos de emergencia.</li>
+        <li><strong>Sala de Procedimientos:</strong> Para procedimientos menores (suturas, yesos). Separada del área de observación.</li>
+        <li><strong>Área de Observación:</strong> Camas para pacientes que requieren vigilancia antes de decidir hospitalización o alta. 1 cama por cada 2,000 hab. de la población de referencia (OPS).</li>
+      </ul>
+    </div>
+
+    <div class="content-block">
+      <h3>3.2 — Centro Quirúrgico</h3>
+      <p>El Centro Quirúrgico es la unidad de mayor complejidad técnica del hospital. Su diseño es crítico para el control de infecciones, la seguridad del paciente y la eficiencia operativa. En el Perú, la NTS N°113-MINSA establece los requisitos mínimos para su habilitación.</p>
+      <div class="highlight-box">
+        <p>El principio organizativo central del Centro Quirúrgico es el <strong>flujo unidireccional limpio</strong>: el paciente ingresa por la zona sucia (camilla de transporte), es transferido en la zona de transferencia a una camilla limpia, transita por la zona limpia (pasillo limpio) hasta la sala de operaciones, y egresa por la zona sucia (pasillo sucio) de vuelta a recuperación.</p>
+      </div>
+      <h4>Zonas del Centro Quirúrgico</h4>
+      <div class="info-grid">
+        <div class="info-card"><div class="ic-label">Zona de Transferencia</div><div class="ic-val">Intercambio de camillas. Barrera entre zona externa e interna. Área mínima: 15 m².</div></div>
+        <div class="info-card"><div class="ic-label">Pasillo Limpio</div><div class="ic-val">Acceso a salas de operaciones. Ancho mínimo 2.40 m. Paredes lisas y lavables.</div></div>
+        <div class="info-card"><div class="ic-label">Sala de Operaciones</div><div class="ic-val">Área mínima: 36 m² (cirugía general). 42 m² (cirugía cardiovascular, trasplantes).</div></div>
+        <div class="info-card"><div class="ic-label">Pasillo Sucio</div><div class="ic-val">Evacuación de material contaminado y paciente post-cirugía. Separado del pasillo limpio.</div></div>
+        <div class="info-card"><div class="ic-label">Lavamanos Quirúrgico</div><div class="ic-val">Obligatorio frente a cada sala. Mínimo 2 puestos. Accionamiento no manual.</div></div>
+        <div class="info-card"><div class="ic-label">URPA (Recuperación)</div><div class="ic-val">2 camas por sala de operaciones. Monitoreo continuo. Acceso directo a UCI.</div></div>
+      </div>
+      <h4>Dimensionamiento</h4>
+      <p>La OPS recomienda 1 sala de operaciones por cada 50 camas hospitalarias. Para un hospital de 200 camas, se requieren entre 4 y 6 salas de operaciones, más 1 sala de partos y 1 sala de cesáreas si incluye obstetricia.</p>
+    </div>
+
+    <div class="content-block">
+      <h3>3.3 — Unidad de Cuidados Intensivos (UCI)</h3>
+      <p>La UCI es la unidad de mayor intensidad de cuidados y mayor complejidad en instalaciones técnicas por metro cuadrado. Según la NTS N°119-MINSA, cada cama de UCI requiere condiciones específicas de área, instalaciones y equipamiento.</p>
+      <h4>Requerimientos por Cama de UCI</h4>
+      <ul>
+        <li><strong>Área mínima:</strong> 20 m² por cama en UCI abierta; 25 m² en módulos individuales.</li>
+        <li><strong>Cabecera de cama:</strong> Panel de cabecera con gases medicinales (O₂, aire médico, vacío), tomas eléctricas de emergencia (UPS), puntos de datos y comunicaciones.</li>
+        <li><strong>Iluminación:</strong> General ajustable (50-300 lux), iluminación de examen (1000 lux) y luz circadiana para regulación del ritmo biológico del paciente.</li>
+        <li><strong>HVAC:</strong> Sistema de climatización individual por zona, 12-15 renovaciones de aire/hora, presión positiva en inmunosuprimidos y presión negativa en aislamiento infeccioso.</li>
+        <li><strong>Lavamanos:</strong> Mínimo 1 cada 2 camas, de accionamiento no manual, para higiene de manos del personal.</li>
+      </ul>
+    </div>
+
+    <div class="content-block">
+      <h3>3.4 — Consulta Externa y Hospitalización</h3>
+      <h4>Consulta Externa</h4>
+      <p>Es la unidad de mayor afluencia de usuarios del hospital. Su diseño debe priorizar la claridad del recorrido del paciente, la privacidad en la consulta y la eficiencia en los tiempos de espera. La NTS N°021-MINSA establece un área mínima de 12 m² por consultorio médico. Los consultorios de especialidades con procedimientos (ginecología, urología, otorrinolaringología) requieren áreas de 14-18 m² con área de procedimientos diferenciada.</p>
+      <p>La ratio estándar es de 4-6 consultorios por médico en jornadas partidas. Para dimensionar la sala de espera se considera 1.5 m² por silla y un factor de ocupación del 70% del total de consultorios en simultaneidad.</p>
+      <h4>Unidad de Hospitalización</h4>
+      <p>La unidad de hospitalización se organiza en <em>módulos de enfermería</em>, cada uno con capacidad de 20-30 camas. El módulo incluye la estación de enfermería como núcleo central, habitaciones para pacientes (individuales, dobles o de 4 camas), servicios higiénicos, sala de trabajo limpio, sala de trabajo sucio, almacén de medicamentos y office de enfermería.</p>
+      <div class="info-grid">
+        <div class="info-card"><div class="ic-label">Habitación Individual</div><div class="ic-val">Área mínima: 14 m² + SSHH privado de 4 m².</div></div>
+        <div class="info-card"><div class="ic-label">Habitación 2 camas</div><div class="ic-val">Área mínima: 20 m² + SSHH compartido.</div></div>
+        <div class="info-card"><div class="ic-label">Habitación 4 camas</div><div class="ic-val">Área mínima: 36 m² + SSHH compartido.</div></div>
+        <div class="info-card"><div class="ic-label">Estación de Enfermería</div><div class="ic-val">Radio máximo de 30 m a la cama más lejana. Área mínima: 15 m².</div></div>
+      </div>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="nav-btn" onclick="showPage('page-m2', document.querySelectorAll('.nav-item')[2])">← Módulo 02</button>
+      <button class="nav-btn next" onclick="showPage('page-m4', document.querySelectorAll('.nav-item')[4])">Módulo 04 →</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       MÓDULO 04 — SISTEMAS MEP
+  ══════════════════════════════════════════ -->
+  <div class="page-section" id="page-m4">
+    <div class="module-header">
+      <div class="module-num-big">04</div>
+      <div class="module-meta">
+        <div class="tag">Módulo 04 · Instalaciones</div>
+        <h2>Sistemas MEP Hospitalarios</h2>
+        <p>Dominio de las instalaciones mecánicas, eléctricas y de plomería especializadas que hacen posible el funcionamiento seguro de un establecimiento hospitalario de alto nivel.</p>
+      </div>
+    </div>
+
+    <div class="content-block">
+      <h3>4.1 — Gases Medicinales</h3>
+      <p>El sistema de gases medicinales es uno de los sistemas más críticos del hospital. Su falla puede comprometer directamente la vida de los pacientes. En el Perú, su diseño se rige por la NTS N°021-MINSA, la norma NFPA 99 (Healthcare Facilities Code) y las recomendaciones de la OPS.</p>
+      <h4>Gases Principales del Sistema</h4>
+      <ul>
+        <li><strong>Oxígeno medicinal (O₂):</strong> Almacenado en tanques criogénicos (para hospitales de alta complejidad) o baterías de cilindros. Presión de distribución: 4 bar. Color de tubería: blanco o verde.</li>
+        <li><strong>Aire medicinal comprimido:</strong> Producido por compresor con filtros de alta eficiencia para garantizar calidad medicinal (libre de aceite, humedad y partículas). Presión: 4 bar.</li>
+        <li><strong>Vacío clínico:</strong> Sistema de aspiración para procedimientos clínicos y quirúrgicos. Presión negativa de -400 mmHg a -600 mmHg.</li>
+        <li><strong>Óxido nitroso (N₂O):</strong> Gas anestésico. En salas de operaciones y obstetricia. Baterías de cilindros con panel de control automático.</li>
+        <li><strong>CO₂ medicinal y nitrógeno:</strong> Para procedimientos específicos (cirugía laparoscópica, criocirugía).</li>
+      </ul>
+      <div class="highlight-box">
+        <p>Cada toma de gases en cabecera de cama de UCI o panel de quirófano debe tener conectores específicos e incompatibles entre sí (norma DISS o NIST) para eliminar la posibilidad de conexión errónea, que podría ser fatal.</p>
+      </div>
+      <h4>Central de Gases</h4>
+      <p>La central de gases debe estar ubicada en el exterior del edificio principal, en zona de fácil acceso para reposición, alejada de fuentes de calor e ignición, con ventilación natural y protección contra la lluvia. Debe contar con sistema de alarma centralizado que notifique al personal cuando la presión cae por debajo del nivel seguro de operación.</p>
+    </div>
+
+    <div class="content-block">
+      <h3>4.2 — Climatización y HVAC Hospitalario</h3>
+      <p>El sistema de climatización hospitalaria va mucho más allá del confort térmico: es un sistema de control de infecciones. La normativa ASHRAE 170 (Ventilation of Health Care Facilities) establece los parámetros mínimos de temperatura, humedad, renovaciones de aire y presurización para cada tipo de área clínica.</p>
+      <h4>Parámetros Clave por Área</h4>
+      <div class="info-grid">
+        <div class="info-card"><div class="ic-label">Sala de Operaciones</div><div class="ic-val">20-24°C. HR 20-60%. 20 renovaciones/h. 100% aire exterior. Presión positiva. Filtros HEPA.</div></div>
+        <div class="info-card"><div class="ic-label">UCI General</div><div class="ic-val">21-24°C. HR 30-60%. 12 renovaciones/h. Presión variable según protocolo.</div></div>
+        <div class="info-card"><div class="ic-label">Aislamientos Infecciosos</div><div class="ic-val">Presión negativa. 12 renovaciones/h. Antecámara obligatoria.</div></div>
+        <div class="info-card"><div class="ic-label">Onco/Trasplantes</div><div class="ic-val">Presión positiva. 12+ renovaciones/h. Filtros HEPA. Antecámara.</div></div>
+        <div class="info-card"><div class="ic-label">Laboratorio</div><div class="ic-val">Presión negativa. Extracción forzada en áreas de trabajo.</div></div>
+        <div class="info-card"><div class="ic-label">Farmacia Oncológica</div><div class="ic-val">Cabinas de flujo laminar vertical. Presión negativa. HEPA.</div></div>
+      </div>
+      <h4>Tipos de Sistemas HVAC Hospitalario</h4>
+      <p><strong>Sistemas de Volumen de Aire Constante (CAV):</strong> Flujo fijo de aire con variación de temperatura. Sencillos pero menos eficientes energéticamente. Adecuados para áreas de alta criticidad donde el caudal de aire no debe variar.</p>
+      <p><strong>Sistemas de Volumen de Aire Variable (VAV):</strong> Ajustan el caudal de aire según demanda. Mayor eficiencia energética. Usados en áreas de menor criticidad como consulta externa u oficinas administrativas.</p>
+      <p><strong>Sistemas Fan Coil + UTA:</strong> Combinación de unidades terminales (fan coils) con unidades de tratamiento de aire (UTA) para zonas de hospitalización. Permiten control individual por habitación.</p>
+    </div>
+
+    <div class="content-block">
+      <h3>4.3 — Instalaciones Eléctricas Hospitalarias</h3>
+      <p>El sistema eléctrico hospitalario debe garantizar la continuidad del suministro en todo momento. La falla eléctrica en áreas críticas puede costar vidas. La NFPA 99 clasifica el sistema eléctrico hospitalario en tres ramas según su criticidad:</p>
+      <h4>Clasificación del Sistema Eléctrico (NFPA 99)</h4>
+      <ul>
+        <li><strong>Sistema Esencial de Vida (Life Safety Branch):</strong> Transferencia automática en ≤10 segundos. Iluminación de emergencia, alarmas de incendio, señalética de evacuación.</li>
+        <li><strong>Sistema Crítico (Critical Branch):</strong> Transferencia en ≤10 segundos. Equipos de soporte vital, monitoreo, iluminación quirúrgica, equipos de diagnóstico.</li>
+        <li><strong>Sistema de Equipamiento (Equipment System):</strong> Transferencia en ≤10 segundos. Esterilizadores, sistemas de climatización de áreas críticas, ascensores hospitalarios.</li>
+      </ul>
+      <div class="highlight-box">
+        <p>Todo hospital debe contar con un grupo electrógeno de respaldo con capacidad de abastecer al 100% de las cargas críticas durante al menos 72 horas de operación autónoma, con depósito de combustible garantizado para ese período.</p>
+      </div>
+      <h4>Sistemas de Puesta a Tierra e Isolación</h4>
+      <p>En áreas de anestesia y cirugía, se requieren sistemas de alimentación aislada (IT systems) que protejan al paciente de micro-corrientes de fuga. El sistema de monitoreo de aislamiento (IMD) detecta fallas de aislamiento antes de que alcancen niveles peligrosos y activa alarmas visuales y sonoras sin interrumpir el suministro.</p>
+    </div>
+
+    <div class="content-block">
+      <h3>4.4 — Sistemas Hidrosanitarios Hospitalarios</h3>
+      <p>Los sistemas de agua en el hospital son mucho más complejos que en edificios convencionales. La calidad del agua es un factor crítico en el control de infecciones hospitalarias, especialmente ante patógenos como <em>Legionella pneumophila</em>, que prolifera en sistemas de agua caliente mal mantenidos.</p>
+      <h4>Componentes del Sistema</h4>
+      <ul>
+        <li><strong>Agua purificada para hemodiálisis:</strong> Sistema de ósmosis inversa que produce agua ultrapura (conductividad &lt;1 μS/cm). Circuito de recirculación continua para evitar estancamiento.</li>
+        <li><strong>Agua blanda para esterilización:</strong> Ablandada y desmineralizada para evitar depósitos calcáreos en autoclaves y lavadoras instrumentales.</li>
+        <li><strong>Agua caliente sanitaria:</strong> Debe mantenerse a ≥60°C en el acumulador y ≥50°C en los puntos de uso para prevenir Legionella. Sistema de recirculación continua.</li>
+        <li><strong>Tratamiento de efluentes hospitalarios:</strong> Los efluentes del laboratorio, la unidad de oncología y la lavandería requieren pretratamiento antes de su vertimiento a la red pública, según la normativa del ANA y el MINAM.</li>
+      </ul>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="nav-btn" onclick="showPage('page-m3', document.querySelectorAll('.nav-item')[3])">← Módulo 03</button>
+      <button class="nav-btn next" onclick="showPage('page-m5', document.querySelectorAll('.nav-item')[5])">Módulo 05 →</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       MÓDULO 05 — HUMANIZACIÓN
+  ══════════════════════════════════════════ -->
+  <div class="page-section" id="page-m5">
+    <div class="module-header">
+      <div class="module-num-big">05</div>
+      <div class="module-meta">
+        <div class="tag">Módulo 05 · Humanización</div>
+        <h2>Humanización y Diseño Centrado en el Paciente</h2>
+        <p>Fundamentos del diseño hospitalario basado en evidencia científica para crear entornos que promuevan la recuperación, el bienestar y la dignidad del paciente.</p>
+      </div>
+    </div>
+
+    <div class="content-block">
+      <h3>5.1 — Evidence-Based Design (EBD) en Arquitectura Hospitalaria</h3>
+      <p>El <em>Evidence-Based Design</em> es la práctica de tomar decisiones de diseño basadas en la mejor evidencia disponible de investigación científica, con el objetivo de mejorar los resultados de salud. Este enfoque surgió en Estados Unidos en la década de 1980 y hoy es reconocido como el estándar de práctica en el diseño hospitalario avanzado.</p>
+      <p>El Center for Health Design (EUA) ha recopilado más de 1,200 estudios que demuestran correlaciones entre el entorno físico hospitalario y resultados clínicos medibles: tiempo de hospitalización, dosis de analgésicos administrados, tasa de infecciones, errores de medicación, satisfacción del paciente y rotación del personal.</p>
+      <div class="highlight-box">
+        <p>Un estudio pionero de Roger Ulrich (1984) demostró que pacientes en habitaciones con ventana a jardín necesitaban menos analgésicos, tenían menos complicaciones postquirúrgicas y recibían el alta 1 día antes que pacientes con ventana a una pared de ladrillo. Esta investigación fundó el campo del EBD hospitalario.</p>
+      </div>
+      <h4>Pilares del EBD Hospitalario</h4>
+      <ul>
+        <li><strong>Acceso a naturaleza y luz natural:</strong> Vistas al exterior, jardines terapéuticos, iluminación circadiana.</li>
+        <li><strong>Control de ruido:</strong> Nivel sonoro &lt;35 dB(A) en habitaciones de hospitalización. Materiales absorbentes, diseño acústico de techos y pasillos.</li>
+        <li><strong>Habitaciones individuales:</strong> Reducen infecciones cruzadas, mejoran el descanso y permiten la presencia familiar como apoyo terapéutico.</li>
+        <li><strong>Orientabilidad y señalética:</strong> El diseño arquitectónico que facilita la orientación del usuario reduce el estrés y los errores de circulación.</li>
+        <li><strong>Diseño para la seguridad:</strong> Pisos antideslizantes, barandas adecuadas, iluminación nocturna, camas de altura ajustable para reducir caídas.</li>
+      </ul>
+    </div>
+
+    <div class="content-block">
+      <h3>5.2 — Diseño de Habitaciones de Alta Calidad</h3>
+      <p>La habitación individual del paciente es la unidad básica del diseño hospitalario humanizado. Su diseño debe atender simultáneamente las necesidades del paciente (descanso, privacidad, dignidad, conexión con el exterior), del personal (acceso al paciente desde ambos lados de la cama, visión directa desde la estación de enfermería, ergonomía de trabajo) y de la familia (espacio para acompañante, privacidad, zona de permanencia confortable).</p>
+      <h4>Estándares de la Habitación Humanizada</h4>
+      <ul>
+        <li>Área mínima recomendada: 20-25 m² (superior al mínimo normativo) para posibilitar atención bilateral y presencia de acompañante.</li>
+        <li>Ventana de al menos 20% del área del piso, orientada preferiblemente al norte o al este para luz matinal sin deslumbramiento.</li>
+        <li>Baño accesible en suite, con barra de apoyo, piso antideslizante, ducha a nivel de piso y lavamanos de uso del paciente.</li>
+        <li>Panel de cabecera integrado que concentre los sistemas técnicos (gases, electricidad, iluminación de tarea, llamada de enfermería) sin interferir con el espacio de atención.</li>
+        <li>Zona de acompañante con sillón-cama, mesa lateral y espacio de pertenencias, separada visualmente pero conectada con el paciente.</li>
+        <li>Pantalla o televisor orientable, acceso a WiFi y sistema de entretenimiento como parte del entorno terapéutico.</li>
+      </ul>
+    </div>
+
+    <div class="content-block">
+      <h3>5.3 — Accesibilidad Universal en el Hospital</h3>
+      <p>El hospital es uno de los edificios donde la accesibilidad universal tiene mayor impacto, ya que sus usuarios incluyen personas con discapacidad temporal (pacientes con fractura, post-operatorio) o permanente, adultos mayores, personas con discapacidad sensorial y personas en sillas de ruedas o camillas.</p>
+      <p>En el Perú, la Ley N°29973 (Ley General de la Persona con Discapacidad) y la Norma A.120 del RNE establecen los requerimientos mínimos de accesibilidad. Sin embargo, el diseño hospitalario de calidad debe superar estos mínimos.</p>
+      <h4>Elementos Clave de Accesibilidad</h4>
+      <ul>
+        <li><strong>Rampas:</strong> Pendiente máxima 8% en recorridos exteriores, 6% en interiores. Ancho mínimo 1.50 m libre. Pasamanos a ambos lados, a doble altura.</li>
+        <li><strong>Ascensores hospitalarios:</strong> Dimensiones mínimas de cabina 1.50 m x 2.00 m para admitir camillas. Puertas de ancho mínimo 1.20 m.</li>
+        <li><strong>Servicios higiénicos accesibles:</strong> En todas las unidades de atención pública. Espacio de transferencia lateral a inodoro de 90 cm.</li>
+        <li><strong>Señalética multisensorial:</strong> Visual (contraste cromático), táctil (pavimento guía para invidentes) y sonora (sistemas de audio en accesos principales).</li>
+      </ul>
+    </div>
+
+    <div class="content-block">
+      <h3>5.4 — Color, Iluminación y Diseño Sensorial</h3>
+      <p>El color y la iluminación en el hospital no son elementos meramente decorativos: tienen efectos fisiológicos y psicológicos documentados. La <em>cromoterapia clínica</em> y los estudios de neurociencia ambiental han establecido pautas concretas para su aplicación en entornos de salud.</p>
+      <h4>Iluminación Circadiana</h4>
+      <p>El sistema de iluminación circadiana regula la temperatura de color e intensidad de la iluminación a lo largo del día, imitando el ciclo natural de la luz solar. Esto tiene efectos positivos demostrados en la recuperación de pacientes críticos, en la reducción del síndrome confusional agudo (delirium) en UCI y en el desempeño del personal en turnos nocturnos.</p>
+      <ul>
+        <li>Mañana (6:00-10:00): Luz fría, 5000-6500 K, alta intensidad para activar al paciente.</li>
+        <li>Mediodía (10:00-15:00): Luz neutra, 4000-5000 K, para actividad y tratamientos.</li>
+        <li>Tarde (15:00-20:00): Luz cálida, 2700-3500 K, para relajación y visitas.</li>
+        <li>Noche (20:00-6:00): Intensidad mínima, &lt;10 lux en el espacio de descanso, para preservar el sueño.</li>
+      </ul>
+      <h4>Paleta Cromática Hospitalaria</h4>
+      <p>Se recomienda el uso de colores neutros cálidos (blancos marfil, grises cálidos, verdes sage) como base en áreas de hospitalización, con acentos cromáticos que faciliten la orientación. Los colores saturados y fríos (azul intenso, verde hospitalario clásico) deben limitarse a áreas técnicas y de servicio.</p>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="nav-btn" onclick="showPage('page-m4', document.querySelectorAll('.nav-item')[4])">← Módulo 04</button>
+      <button class="nav-btn next" onclick="showPage('page-m6', document.querySelectorAll('.nav-item')[6])">Módulo 06 →</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       MÓDULO 06 — BIM Y TECNOLOGÍA
+  ══════════════════════════════════════════ -->
+  <div class="page-section" id="page-m6">
+    <div class="module-header">
+      <div class="module-num-big">06</div>
+      <div class="module-meta">
+        <div class="tag">Módulo 06 · Tecnología</div>
+        <h2>BIM y Tecnología en Salud</h2>
+        <p>Aplicación de metodologías digitales avanzadas, Building Information Modeling e innovación tecnológica en el diseño y gestión de infraestructura hospitalaria.</p>
+      </div>
+    </div>
+
+    <div class="content-block">
+      <h3>6.1 — BIM Hospitalario: Concepto y Alcance</h3>
+      <p>Building Information Modeling (BIM) es una metodología de trabajo colaborativo basada en modelos digitales tridimensionales que integran información geométrica, técnica, temporal y de costos de un edificio. En el contexto hospitalario, el BIM adquiere una dimensión adicional: el modelo BIM de un hospital puede vincularse con los sistemas de gestión hospitalaria (HIS), los activos de equipamiento médico y los planes de mantenimiento preventivo, creando lo que se denomina un <em>digital twin</em> o gemelo digital del hospital.</p>
+      <div class="highlight-box">
+        <p>En el Perú, el Decreto Legislativo N°1444 y su reglamento exigen la implementación gradual de BIM en proyectos de inversión pública, incluyendo infraestructura hospitalaria financiada por el Estado. El arquitecto hospitalario que domine BIM tiene una ventaja competitiva decisiva en el mercado actual.</p>
+      </div>
+      <h4>Niveles de Madurez BIM Aplicados al Hospital</h4>
+      <ul>
+        <li><strong>BIM Nivel 1 (LOD 100-200):</strong> Modelado conceptual. Volúmenes, áreas, orientación. Verificación de programa arquitectónico y relaciones funcionales.</li>
+        <li><strong>BIM Nivel 2 (LOD 300-400):</strong> Coordinación multidisciplinaria. Detección de conflictos (clash detection) entre estructura, arquitectura e instalaciones MEP. Reducción de errores en obra.</li>
+        <li><strong>BIM Nivel 3 (LOD 500):</strong> As-built. Modelo que refleja el hospital construido, actualizado durante la obra. Base para la gestión del FM (Facility Management).</li>
+      </ul>
+    </div>
+
+    <div class="content-block">
+      <h3>6.2 — Coordinación MEP con BIM</h3>
+      <p>La coordinación de instalaciones MEP es quizás el área donde el BIM aporta mayor valor en proyectos hospitalarios. Un hospital de mediana complejidad puede tener más de 50 km de tuberías, ductos y bandejas eléctricas distribuidas en el edificio. Sin BIM, la detección y resolución de interferencias entre estos sistemas se realiza en obra, generando retrasos y sobrecostos significativos.</p>
+      <p>Con BIM, la detección de conflictos (clash detection) se realiza de forma automática en el modelo digital antes del inicio de la construcción. Estudios del McKinsey Global Institute señalan que la implementación de BIM en proyectos hospitalarios reduce los sobrecostos en obra en un promedio del 20-30% y los plazos de construcción en un 10-15%.</p>
+      <h4>Proceso de Coordinación BIM en Hospital</h4>
+      <ol>
+        <li>Definición del BEP (BIM Execution Plan) con roles, responsabilidades y estándares.</li>
+        <li>Modelado disciplinar independiente: arquitectura, estructura, MEP.</li>
+        <li>Federación de modelos en plataforma común (Navisworks, Revit Coordination).</li>
+        <li>Detección automática de conflictos y generación de RFIs.</li>
+        <li>Resolución coordinada de conflictos en reuniones BCF (BIM Collaboration Format).</li>
+        <li>Actualización del modelo coordinado y generación de planos de construcción.</li>
+      </ol>
+    </div>
+
+    <div class="content-block">
+      <h3>6.3 — Tecnologías Emergentes en el Hospital del Futuro</h3>
+      <h4>Internet de las Cosas Médicas (IoMT)</h4>
+      <p>El IoMT conecta dispositivos médicos, equipos de monitoreo y sistemas hospitalarios en una red inteligente. En la arquitectura hospitalaria, esto impacta en el diseño de infraestructura de telecomunicaciones: redes de alta capacidad, redundancia, cobertura WiFi y 5G en todos los ambientes clínicos, y ductos y bandejas para el cableado estructurado que permite la expansión futura.</p>
+      <h4>Robótica Hospitalaria</h4>
+      <p>Los robots de distribución de medicamentos y materiales (como el sistema TUG de Aethon) ya operan en hospitales de alta complejidad. Su integración arquitectónica requiere pasillos de ancho mínimo 2.40 m, puertas de ancho mínimo 1.20 m con apertura automática y un sistema de gestión de tráfico que evite colisiones con personas y otros equipos.</p>
+      <h4>Telemedicina e Infraestructura Digital</h4>
+      <p>La pandemia de COVID-19 aceleró masivamente la adopción de la telemedicina. En el Perú, la Ley N°30421 y su reglamento establecen el marco para la telesalud. Arquitectónicamente, esto requiere el diseño de consultorios con iluminación adecuada para videoconsulta, fondo neutro, equipamiento audiovisual integrado y conexión de banda ancha garantizada.</p>
+      <h4>Impresión 3D en Salud</h4>
+      <p>La fabricación aditiva permite la producción de implantes personalizados, modelos anatómicos para planificación quirúrgica y equipamiento médico de bajo costo. Los hospitales de mayor complejidad empiezan a incorporar laboratorios de impresión 3D, que requieren espacios con ventilación especial para emisiones de partículas y temperatura controlada.</p>
+    </div>
+
+    <div class="content-block">
+      <h3>6.4 — Sostenibilidad Ambiental en Hospitales</h3>
+      <p>Los hospitales son grandes consumidores de energía: en promedio, consumen entre 400 y 700 kWh/m²/año, dos a tres veces más que un edificio de oficinas. La sostenibilidad en el diseño hospitalario no es solo una responsabilidad ambiental: también es un imperativo económico y de resiliencia operativa.</p>
+      <h4>Estrategias de Eficiencia Energética</h4>
+      <ul>
+        <li><strong>Envolvente de alta performance:</strong> Aislamiento térmico, vidrios de control solar, parasoles y voladizos que reduzcan la carga de climatización.</li>
+        <li><strong>Recuperación de calor:</strong> Intercambiadores de calor en los sistemas de ventilación que recuperan hasta el 70% de la energía del aire expulsado.</li>
+        <li><strong>Cogeneración:</strong> Producción simultánea de electricidad y calor útil con un único combustible. Eficiencia global de 80-90% frente al 35-40% de la generación eléctrica convencional.</li>
+        <li><strong>Energías renovables:</strong> Paneles fotovoltaicos para generación eléctrica, colectores solares térmicos para agua caliente sanitaria.</li>
+        <li><strong>Gestión inteligente de la energía (BEMS):</strong> Sistemas de monitoreo y control que optimizan en tiempo real el consumo energético del edificio.</li>
+      </ul>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="nav-btn" onclick="showPage('page-m5', document.querySelectorAll('.nav-item')[5])">← Módulo 05</button>
+      <button class="nav-btn next" onclick="showPage('page-m7', document.querySelectorAll('.nav-item')[7])">Módulo 07 →</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       MÓDULO 07 — GESTIÓN DE PROYECTOS
+  ══════════════════════════════════════════ -->
+  <div class="page-section" id="page-m7">
+    <div class="module-header">
+      <div class="module-num-big">07</div>
+      <div class="module-meta">
+        <div class="tag">Módulo 07 · Gestión</div>
+        <h2>Gestión y Dirección de Proyectos Hospitalarios</h2>
+        <p>Herramientas y metodologías para la dirección eficiente de proyectos de infraestructura de salud, desde la concepción hasta la puesta en operación.</p>
+      </div>
+    </div>
+
+    <div class="content-block">
+      <h3>7.1 — El Ciclo de Vida del Proyecto Hospitalario</h3>
+      <p>Un proyecto de infraestructura hospitalaria es uno de los proyectos más complejos que puede enfrentar un arquitecto. Su ciclo de vida completo —desde la concepción hasta la puesta en operación— puede extenderse de 5 a 15 años en proyectos de alta complejidad, con inversiones que van de los 20 millones a los 500 millones de dólares.</p>
+      <h4>Fases del Proyecto</h4>
+      <div class="info-grid">
+        <div class="info-card"><div class="ic-label">Fase 1: Preinversión</div><div class="ic-val">Perfil, factibilidad, expediente técnico. En el sector público peruano: sistema INVIERTE.PE.</div></div>
+        <div class="info-card"><div class="ic-label">Fase 2: Diseño</div><div class="ic-val">Anteproyecto, proyecto definitivo, especificaciones técnicas, metrados y presupuesto.</div></div>
+        <div class="info-card"><div class="ic-label">Fase 3: Licitación</div><div class="ic-val">Proceso de contratación conforme a Ley N°30225 (Contrataciones del Estado) o normativa privada.</div></div>
+        <div class="info-card"><div class="ic-label">Fase 4: Construcción</div><div class="ic-val">Ejecución de obra, supervisión técnica, control de calidad, gestión de cambios.</div></div>
+        <div class="info-card"><div class="ic-label">Fase 5: Puesta en Marcha</div><div class="ic-val">Comisionamiento de sistemas, habilitación sanitaria, capacitación de personal, transferencia.</div></div>
+        <div class="info-card"><div class="ic-label">Fase 6: Operación y FM</div><div class="ic-val">Mantenimiento preventivo y correctivo, gestión de activos, mejoras y ampliaciones.</div></div>
+      </div>
+    </div>
+
+    <div class="content-block">
+      <h3>7.2 — Gestión del Costo en Proyectos Hospitalarios</h3>
+      <p>El costo de construcción de un hospital varía enormemente según su nivel de complejidad, ubicación geográfica y estándar de calidad. En el Perú, el MINSA ha establecido valores de referencia en los documentos técnicos de la DGIEM. Como referencia general, el costo de construcción de un hospital de mediana complejidad en Lima oscila entre USD 2,000 y USD 4,500 por m² construido, incluyendo instalaciones especializadas y equipamiento inicial.</p>
+      <h4>Estructura de Costos de un Hospital</h4>
+      <ul>
+        <li><strong>Obras civiles y arquitectura:</strong> 35-45% del costo total.</li>
+        <li><strong>Instalaciones MEP:</strong> 25-35% del costo total (significativamente mayor que en edificios convencionales).</li>
+        <li><strong>Equipamiento médico:</strong> 20-30% del costo total en hospitales de alta complejidad.</li>
+        <li><strong>Tecnologías de información:</strong> 5-10% del costo total.</li>
+        <li><strong>Mobiliario y equipamiento no médico:</strong> 3-5%.</li>
+      </ul>
+      <div class="highlight-box">
+        <p>Una de las principales causas de sobrecosto en proyectos hospitalarios es el incremento del programa durante la fase de construcción. El arquitecto debe gestionar con disciplina el programa arquitectónico desde las fases tempranas y establecer mecanismos claros de control de cambios para evitar este fenómeno.</p>
+      </div>
+    </div>
+
+    <div class="content-block">
+      <h3>7.3 — Modalidades de Inversión en Infraestructura de Salud</h3>
+      <h4>Inversión Pública Directa</h4>
+      <p>El Estado financia, diseña, construye y opera el hospital a través de sus organismos competentes (MINSA, EsSalud, Gobiernos Regionales). En el Perú, los proyectos de inversión pública se rigen por el sistema INVIERTE.PE, que reemplazó al SNIP en 2017. Este sistema exige la formulación de una Ficha Técnica o un Estudio de Preinversión a Nivel de Perfil que demuestre la viabilidad técnica, económica y social del proyecto.</p>
+      <h4>Asociaciones Público-Privadas (APP)</h4>
+      <p>Las APP permiten que el sector privado financie, diseñe, construya y opere infraestructura pública de salud a cambio de una retribución del Estado. En el Perú, el marco legal de APP está regulado por el Decreto Legislativo N°1362. EsSalud ha implementado este modelo en varios proyectos, incluyendo el Hospital Alberto Leopoldo Barton Thompson (Callao) y los hospitales de Tarapoto y Piura.</p>
+      <h4>Inversión Privada Directa</h4>
+      <p>Clínicas, grupos médicos e inversores privados desarrollan proyectos hospitalarios con financiamiento propio o bancario. Este segmento ha crecido significativamente en el Perú en la última década, impulsado por la expansión de la clase media y el aumento de la cobertura de seguros privados de salud.</p>
+    </div>
+
+    <div class="content-block">
+      <h3>7.4 — Habilitación Sanitaria y Puesta en Operación</h3>
+      <p>La habilitación sanitaria es el proceso mediante el cual la autoridad competente —la Dirección Regional de Salud (DIRESA) o la Dirección de Salud (DISA), bajo la supervisión de la SUSALUD— verifica que el establecimiento de salud cumple con todos los requisitos de infraestructura, equipamiento y organización para prestar servicios de salud de forma segura y de calidad.</p>
+      <h4>Proceso de Habilitación en el Perú</h4>
+      <ol>
+        <li>Solicitud ante la DIRESA/DISA con documentación técnica completa: planos actualizados, certificados de instalaciones, inventario de equipamiento.</li>
+        <li>Verificación in situ por el equipo técnico de la autoridad sanitaria.</li>
+        <li>Emisión del informe técnico de verificación con observaciones (si las hay).</li>
+        <li>Subsanación de observaciones y reinspección.</li>
+        <li>Otorgamiento de la Resolución de Habilitación Sanitaria.</li>
+        <li>Inscripción en el Registro Nacional de Establecimientos de Salud (RENAES).</li>
+      </ol>
+      <p>El arquitecto hospitalario debe conocer este proceso en detalle y diseñar los establecimientos desde el inicio considerando los requisitos de habilitación, evitando costosas modificaciones al final del proyecto.</p>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="nav-btn" onclick="showPage('page-m6', document.querySelectorAll('.nav-item')[6])">← Módulo 06</button>
+      <button class="nav-btn next" onclick="showPage('page-m8', document.querySelectorAll('.nav-item')[8])">Módulo 08 →</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       MÓDULO 08 — PROYECTO INTEGRADOR
+  ══════════════════════════════════════════ -->
+  <div class="page-section" id="page-m8">
+    <div class="module-header">
+      <div class="module-num-big">08</div>
+      <div class="module-meta">
+        <div class="tag">Módulo 08 · Proyecto Final</div>
+        <h2>Proyecto Integrador Final</h2>
+        <p>Síntesis de las competencias adquiridas en los módulos anteriores mediante el desarrollo de un proyecto real de infraestructura hospitalaria desde la programación hasta el anteproyecto definitivo.</p>
+      </div>
+    </div>
+
+    <div class="content-block">
+      <h3>8.1 — Descripción del Proyecto Integrador</h3>
+      <p>El Proyecto Integrador Final (PIF) es la demostración más completa de las competencias adquiridas durante la maestría. Consiste en el desarrollo integral de un proyecto de infraestructura de salud —real o simulado— desde las fases más tempranas de programación hasta el anteproyecto definitivo, integrando todas las dimensiones estudiadas: normativa, funcional, técnica, humanizada, digital y de gestión.</p>
+      <p>El PIF puede desarrollarse en modalidad individual o en equipos de dos personas, y puede basarse en un proyecto real del entorno profesional del estudiante o en un caso de estudio propuesto por la coordinación académica. En todos los casos, el proyecto debe localizarse en el Perú y responder a un programa médico-arquitectónico justificado.</p>
+      <div class="highlight-box">
+        <p>El Proyecto Integrador no es una tarea académica desconectada de la realidad: es una demostración de competencia profesional. Los mejores proyectos son aquellos que resuelven necesidades reales de infraestructura de salud con rigor técnico, creatividad arquitectónica y sensibilidad humana.</p>
+      </div>
+    </div>
+
+    <div class="content-block">
+      <h3>8.2 — Etapas del Proyecto Integrador</h3>
+      <h4>Etapa 1: Diagnóstico y Programación (Semanas 1-4)</h4>
+      <ul>
+        <li>Selección y justificación del caso de estudio.</li>
+        <li>Análisis del contexto urbano y situacional del terreno.</li>
+        <li>Diagnóstico de la demanda de salud en el área de influencia.</li>
+        <li>Definición del nivel de complejidad y categoría del establecimiento.</li>
+        <li>Elaboración del Programa Médico-Arquitectónico (PMA).</li>
+        <li>Cuadro de áreas por unidad funcional.</li>
+      </ul>
+      <h4>Etapa 2: Concepto y Anteproyecto (Semanas 5-10)</h4>
+      <ul>
+        <li>Definición del concepto arquitectónico y partido de diseño.</li>
+        <li>Organización funcional: zonificación, flujos, relaciones entre unidades.</li>
+        <li>Desarrollo del anteproyecto: planta general, plantas de cada nivel, cortes y elevaciones.</li>
+        <li>Esquema de organización estructural y sistemas MEP.</li>
+        <li>Modelo BIM a nivel LOD 200.</li>
+      </ul>
+      <h4>Etapa 3: Desarrollo Técnico (Semanas 11-16)</h4>
+      <ul>
+        <li>Desarrollo de unidades funcionales críticas a escala 1:50.</li>
+        <li>Planteamiento de sistemas de climatización y gases medicinales.</li>
+        <li>Planteamiento de sistema eléctrico de emergencia.</li>
+        <li>Estrategia de humanización y accesibilidad universal.</li>
+        <li>Estrategia de sostenibilidad ambiental.</li>
+        <li>Estimación de costos de inversión.</li>
+      </ul>
+      <h4>Etapa 4: Presentación Final (Semanas 17-20)</h4>
+      <ul>
+        <li>Memoria descriptiva completa del proyecto.</li>
+        <li>Set de planos a escalas correspondientes.</li>
+        <li>Modelo BIM coordinado.</li>
+        <li>Renders de calidad que comuniquen la propuesta.</li>
+        <li>Presentación ante jurado académico y profesional.</li>
+      </ul>
+    </div>
+
+    <div class="content-block">
+      <h3>8.3 — Criterios de Evaluación</h3>
+      <div class="info-grid">
+        <div class="info-card"><div class="ic-label">Programación (20%)</div><div class="ic-val">Rigor del diagnóstico, coherencia del PMA, justificación de áreas y niveles de complejidad.</div></div>
+        <div class="info-card"><div class="ic-label">Diseño Funcional (25%)</div><div class="ic-val">Organización de flujos, zonificación, relaciones funcionales, eficiencia circulatoria.</div></div>
+        <div class="info-card"><div class="ic-label">Calidad Arquitectónica (20%)</div><div class="ic-val">Coherencia del partido, calidad espacial, humanización, accesibilidad universal.</div></div>
+        <div class="info-card"><div class="ic-label">Resolución Técnica (20%)</div><div class="ic-val">Planteamiento de sistemas MEP, estructura, normativa aplicada correctamente.</div></div>
+        <div class="info-card"><div class="ic-label">BIM y Documentación (10%)</div><div class="ic-val">Calidad del modelo BIM, planos, memoria descriptiva y presentación gráfica.</div></div>
+        <div class="info-card"><div class="ic-label">Defensa Oral (5%)</div><div class="ic-val">Claridad expositiva, dominio del contenido, respuesta a preguntas del jurado.</div></div>
+      </div>
+    </div>
+
+    <div class="content-block">
+      <h3>8.4 — Perfil de Egreso del Maestro en Arquitectura Hospitalaria</h3>
+      <p>Al concluir satisfactoriamente el programa, el egresado de la Maestría en Arquitectura Hospitalaria de Interior Clinic estará en capacidad de:</p>
+      <ul>
+        <li>Diseñar establecimientos de salud de todos los niveles de complejidad conforme a la normativa peruana (MINSA, DGIEM, RNE) e internacional (OPS, ASHRAE, NFPA, JCI).</li>
+        <li>Elaborar y evaluar Programas Médico-Arquitectónicos fundamentados en análisis de demanda y modelos de atención de salud.</li>
+        <li>Coordinar proyectos multidisciplinarios de infraestructura hospitalaria utilizando metodología BIM.</li>
+        <li>Especificar y coordinar sistemas MEP hospitalarios especializados: gases medicinales, HVAC clínico, instalaciones eléctricas de emergencia y sistemas hidrosanitarios especiales.</li>
+        <li>Aplicar principios de humanización del entorno, evidence-based design y accesibilidad universal en el diseño hospitalario.</li>
+        <li>Gestionar proyectos hospitalarios en sus fases de preinversión, diseño, construcción y puesta en operación, incluyendo el proceso de habilitación sanitaria.</li>
+        <li>Liderar equipos de trabajo en entornos de alta complejidad técnica y multidisciplinaria.</li>
+        <li>Desarrollar propuestas innovadoras que integren tecnologías emergentes (IoMT, robótica, telemedicina) en la infraestructura hospitalaria del futuro.</li>
+      </ul>
+      <div class="highlight-box">
+        <p>El arquitecto hospitalario es uno de los profesionales con mayor impacto social en el sector de la construcción. Cada proyecto bien diseñado se traduce en vidas salvadas, en recuperaciones más rápidas, en mejor calidad de atención para miles de peruanos. Esta responsabilidad es el motor que impulsa la excelencia en la práctica profesional.</p>
+      </div>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="nav-btn" onclick="showPage('page-m7', document.querySelectorAll('.nav-item')[7])">← Módulo 07</button>
+      <button class="nav-btn" onclick="showPage('page-home', document.querySelectorAll('.nav-item')[0])" style="background:var(--accent2);border-color:var(--accent2);color:#000;font-weight:600;">⌂ Inicio del Curso</button>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<!-- ══ VOICE BAR ══════════════════════════════════════════════ -->
+<div class="voice-bar">
+  <span class="voice-icon" id="voiceIcon">🎙️</span>
+  <span class="vb-label" id="voiceLabel">Listo</span>
+  <span class="voice-preview" id="voicePreview">Selecciona un módulo para escuchar la narración automática en español latino...</span>
+  <div class="voice-controls">
+    <div class="voice-speed">
+      <span>Vel:</span>
+      <input type="range" id="speedRange" min="0.6" max="1.8" step="0.1" value="0.88" oninput="updateSpeed(this.value)">
+      <span id="speedVal">0.9x</span>
+    </div>
+    <button class="vb-btn" id="playBtn" onclick="togglePlay()">▶ Leer</button>
+    <button class="vb-btn stop-btn" onclick="stopVoice()">■ Stop</button>
+    <button class="vb-toggle" id="voiceToggle" onclick="toggleVoiceEnabled()" title="Activar/desactivar narración automática">🔊</button>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════
+//  NAVEGACIÓN
+// ══════════════════════════════════════════════════
+const pages = ['page-home','page-m1','page-m2','page-m3','page-m4','page-m5','page-m6','page-m7','page-m8'];
+let currentPage = 'page-home';
+
+function showPage(id, navEl) {
+  stopVoice();
+  document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if (navEl) navEl.classList.add('active');
+  currentPage = id;
+  window.scrollTo({top:0, behavior:'smooth'});
+  updateProgress();
+  if (voiceEnabled) setTimeout(() => readCurrentPage(), 700);
+}
+
+function updateProgress() {
+  const idx = pages.indexOf(currentPage);
+  const pct = idx === 0 ? 0 : (idx / (pages.length - 1)) * 100;
+  document.getElementById('progress-fill').style.width = pct + '%';
+}
+
+// ══════════════════════════════════════════════════
+//  MOTOR DE VOZ — idéntico al curso LEED
+//  Idioma: es-PE (español peruano / latino)
+// ══════════════════════════════════════════════════
+const synth      = window.speechSynthesis;
+let currentUtt   = null;
+let voiceEnabled = true;
+let selectedVoice = null;
+let speechRate   = 0.88;
+let isPlaying    = false;
+
+// ── Seleccionar la mejor voz en español ──────────
+function getSpanishVoice() {
+  const voices = synth.getVoices();
+  const priority = ['es-PE','es-419','es-MX','es-US','es-AR','es-CL','es-CO','es-ES','es'];
+  for (const lang of priority) {
+    const v = voices.find(v => v.lang === lang || v.lang.startsWith(lang));
+    if (v) return v;
+  }
+  return voices.find(v => v.lang.startsWith('es')) || voices[0];
+}
+
+// ── Extraer texto limpio de la página activa ──────
+function getPageText(pageId) {
+  const section = document.getElementById(pageId);
+  if (!section) return '';
+
+  const walker = document.createTreeWalker(section, NodeFilter.SHOW_TEXT, {
+    acceptNode(node) {
+      const p = node.parentElement;
+      if (!p) return NodeFilter.FILTER_REJECT;
+      if (p.closest('.nav-buttons, .nav-btn, button'))
+        return NodeFilter.FILTER_REJECT;
+      const t = node.textContent.trim();
+      if (!t || t.length < 3) return NodeFilter.FILTER_REJECT;
+      return NodeFilter.FILTER_ACCEPT;
+    }
+  });
+
+  const parts = [];
+  let node;
+  while ((node = walker.nextNode())) {
+    const t = node.textContent.trim();
+    if (t) parts.push(t);
+  }
+  return parts.join(' ').replace(/\s+/g,' ').trim();
+}
+
+// ── Reproducir texto ──────────────────────────────
+function speakText(text) {
+  if (!synth || !text) return;
+  stopVoice();
+
+  currentUtt          = new SpeechSynthesisUtterance(text);
+  currentUtt.lang     = 'es-PE';
+  currentUtt.rate     = speechRate;
+  currentUtt.pitch    = 1.0;
+  currentUtt.volume   = 1;
+
+  if (!selectedVoice) selectedVoice = getSpanishVoice();
+  if (selectedVoice) currentUtt.voice = selectedVoice;
+
+  currentUtt.onstart = () => {
+    isPlaying = true;
+    document.getElementById('voiceIcon').classList.add('speaking');
+    document.getElementById('voiceLabel').textContent   = 'Narrando...';
+    document.getElementById('voicePreview').textContent = text.substring(0, 90) + '...';
+    document.getElementById('playBtn').textContent      = '⏸ Pausar';
+    document.getElementById('playBtn').classList.add('active');
+  };
+
+  currentUtt.onend = currentUtt.onerror = () => {
+    isPlaying = false;
+    document.getElementById('voiceIcon').classList.remove('speaking');
+    document.getElementById('voiceLabel').textContent  = 'Listo';
+    document.getElementById('playBtn').textContent     = '▶ Leer';
+    document.getElementById('playBtn').classList.remove('active');
+  };
+
+  synth.speak(currentUtt);
+}
+
+// ── Leer página activa ────────────────────────────
+function readCurrentPage() {
+  stopVoice();
+  const text = getPageText(currentPage);
+  if (text) speakText(text);
+}
+
+// ── Controles públicos ────────────────────────────
+function togglePlay() {
+  if (synth.speaking && !synth.paused) {
+    synth.pause();
+    isPlaying = false;
+    document.getElementById('voiceIcon').classList.remove('speaking');
+    document.getElementById('voiceLabel').textContent = 'Pausado';
+    document.getElementById('playBtn').textContent    = '▶ Continuar';
+  } else if (synth.paused) {
+    synth.resume();
+    isPlaying = true;
+    document.getElementById('voiceIcon').classList.add('speaking');
+    document.getElementById('voiceLabel').textContent = 'Narrando...';
+    document.getElementById('playBtn').textContent    = '⏸ Pausar';
+  } else {
+    readCurrentPage();
+  }
+}
+
+function stopVoice() {
+  synth.cancel();
+  isPlaying = false;
+  currentUtt = null;
+  document.getElementById('voiceIcon').classList.remove('speaking');
+  document.getElementById('voiceLabel').textContent  = 'Listo';
+  document.getElementById('playBtn').textContent     = '▶ Leer';
+  document.getElementById('playBtn').classList.remove('active');
+}
+
+function updateSpeed(val) {
+  speechRate = parseFloat(val);
+  document.getElementById('speedVal').textContent = speechRate.toFixed(1) + 'x';
+  if (synth.speaking) readCurrentPage();
+}
+
+function toggleVoiceEnabled() {
+  voiceEnabled = !voiceEnabled;
+  const btn = document.getElementById('voiceToggle');
+  btn.textContent = voiceEnabled ? '🔊' : '🔇';
+  btn.title = voiceEnabled ? 'Desactivar narración automática' : 'Activar narración automática';
+  if (!voiceEnabled) stopVoice();
+}
+
+// ── Inicialización ────────────────────────────────
+if (synth.onvoiceschanged !== undefined) {
+  synth.onvoiceschanged = () => { selectedVoice = getSpanishVoice(); };
+}
+
+window.addEventListener('beforeunload', () => synth.cancel());
+
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    selectedVoice = getSpanishVoice();
+    if (voiceEnabled) readCurrentPage();
+  }, 1200);
+});
+</script>
+</body>
+</html>

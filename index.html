@@ -1202,8 +1202,8 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;ove
   <div class="voice-controls">
     <div class="voice-speed">
       <span>Vel:</span>
-      <input type="range" id="speedRange" min="0.6" max="1.8" step="0.1" value="0.88" oninput="updateSpeed(this.value)">
-      <span id="speedVal">0.9x</span>
+      <input type="range" id="speedRange" min="0.6" max="1.8" step="0.1" value="1.5" oninput="updateSpeed(this.value)">
+      <span id="speedVal">1.5x</span>
     </div>
     <button class="vb-btn" id="playBtn" onclick="togglePlay()">▶ Leer</button>
     <button class="vb-btn stop-btn" onclick="stopVoice()">■ Stop</button>
@@ -1237,15 +1237,35 @@ function updateProgress() {
 }
 
 // ══════════════════════════════════════════════════
-//  MOTOR DE VOZ — idéntico al curso LEED
-//  Idioma: es-PE (español peruano / latino)
+//  MOTOR DE VOZ — español latino / es-PE
 // ══════════════════════════════════════════════════
-const synth      = window.speechSynthesis;
-let currentUtt   = null;
-let voiceEnabled = true;
+const synth       = window.speechSynthesis;
+let currentUtt    = null;
+let voiceEnabled  = true;
 let selectedVoice = null;
-let speechRate   = 0.88;
-let isPlaying    = false;
+let speechRate    = 1.5;   // velocidad corregida
+let isPlaying     = false;
+
+// ── Textos pregrabados por módulo (evita problemas con display:none en GitHub) ──
+const moduleTexts = {
+  'page-home': `Bienvenidos a la Maestría en Arquitectura Hospitalaria de Interior Clinic. Este programa de posgrado, de veinte meses y noventa y dos créditos SATCA, está diseñado para formar profesionales altamente especializados en el diseño, planificación y gestión de infraestructuras de salud. A lo largo de ocho módulos temáticos desarrollarán las competencias necesarias para transformar el ecosistema de la salud desde la arquitectura. Presionen el botón Comenzar el Curso para iniciar.`,
+
+  'page-m1': `Módulo uno: Fundamentos y Normativa Hospitalaria. En este primer módulo establecemos las bases teóricas, históricas y regulatorias del diseño hospitalario. Recorremos la historia del hospital desde los albergues medievales hasta el paradigma contemporáneo del hospital inteligente y flexible. Estudiamos cómo Florence Nightingale transformó la arquitectura hospitalaria con su modelo del pabellón abierto, basado en evidencia empírica sobre ventilación e iluminación. Analizamos el sistema de categorización de establecimientos de salud en el Perú, establecido por la Norma Técnica número veintiuno del MINSA, que clasifica los establecimientos del nivel uno-uno al tres-E. Esta clasificación determina el programa arquitectónico mínimo exigido. Cerramos con los cuatro principios fundamentales: seguridad y resiliencia, funcionalidad y eficiencia, flexibilidad y expansibilidad, y humanización del entorno.`,
+
+  'page-m2': `Módulo dos: Planificación y Programación Arquitectónica. Todo gran proyecto hospitalario comienza con datos. En este módulo aprendemos a construir la argumentación técnica que justifica una inversión en infraestructura de salud: el análisis de demanda, la brecha de atención y la proyección de servicios a treinta años. El instrumento central es el Programa Médico-Arquitectónico: el documento que traduce un modelo de atención en ambientes, áreas y relaciones espaciales. No es una lista de cuartos, es la materialización de una visión clínica en espacio construido. Estudiamos los tres modelos de organización funcional: monobloque, disperso y mixto. Y analizamos en profundidad el sistema de circulaciones y flujos, cuya correcta segregación entre flujos limpios y sucios es una condición directa de seguridad para los pacientes.`,
+
+  'page-m3': `Módulo tres: Diseño de Unidades Funcionales. Llegamos al corazón técnico del diseño hospitalario. Descendemos al detalle de las unidades más críticas. La Unidad de Emergencias, donde el diseño desde el porche de ambulancias hasta la sala de reanimación no puede dejar margen al error. El Centro Quirúrgico, cuyo principio del flujo unidireccional limpio es una síntesis perfecta entre arquitectura y clínica: el espacio diseñado para proteger al paciente en su momento de máxima vulnerabilidad. La Unidad de Cuidados Intensivos, con sus veinte metros cuadrados mínimos por cama, sistemas de gases, climatización de doce a quince renovaciones por hora y paneles de cabecera especializados. Y las unidades de Consulta Externa y Hospitalización, con sus módulos de enfermería y estándares de dimensionamiento conforme a la normativa peruana.`,
+
+  'page-m4': `Módulo cuatro: Sistemas MEP Hospitalarios. Un hospital sin instalaciones especializadas es solo un edificio. Los sistemas Mecánicos, Eléctricos y de Plomería son los que convierten la arquitectura en un entorno de curación. Abordamos cuatro sistemas críticos. Los gases medicinales: oxígeno, aire medicinal, vacío clínico y óxido nitroso, con conectores DISS o NIST incompatibles entre sí para eliminar la posibilidad de conexión errónea, que podría ser fatal. La climatización hospitalaria bajo la norma ASHRAE ciento setenta: no es aire acondicionado convencional, es control de infecciones que regula temperatura, humedad, presión y renovaciones de aire por tipo de área clínica. Las instalaciones eléctricas de emergencia bajo la NFPA noventa y nueve, con transferencia automática en diez segundos. Y los sistemas hidrosanitarios especiales, incluyendo agua ultrapura para hemodiálisis y tratamiento de efluentes hospitalarios.`,
+
+  'page-m5': `Módulo cinco: Humanización y Diseño Centrado en el Paciente. Este módulo es el más transformador de la maestría. Nos alejamos de las normas para preguntarnos cómo se siente una persona enferma en el hospital que estamos diseñando. El Evidence-Based Design nos da respuestas científicas. Desde el estudio pionero de Roger Ulrich en mil novecientos ochenta y cuatro, que demostró que una ventana con vista a un jardín reduce analgésicos y acorta la hospitalización, hasta las investigaciones más recientes sobre iluminación circadiana y control del ruido. Aprendemos a diseñar habitaciones de alta calidad que atienden simultáneamente las necesidades del paciente, el personal y la familia. Aplicamos los principios de accesibilidad universal que la Ley número veintinueve mil novecientos setenta y tres establece en el Perú. Y utilizamos el color y la iluminación como herramientas terapéuticas, no como decoración.`,
+
+  'page-m6': `Módulo seis: BIM y Tecnología en Salud. El hospital del siglo veintiuno es un edificio inteligente. Abordamos las tecnologías que están transformando el diseño, la construcción y la operación de los establecimientos de salud. El Building Information Modeling, o BIM, es hoy una exigencia en proyectos de inversión pública en el Perú según el Decreto Legislativo número mil cuatrocientos cuarenta y cuatro. La coordinación MEP con BIM reduce sobrecostos en obra entre un veinte y un treinta por ciento. El gemelo digital del hospital sirve como base para la gestión de activos y el mantenimiento preventivo durante toda la vida útil del edificio. Exploramos además la robótica hospitalaria, el Internet de las Cosas Médicas, la telemedicina, la impresión tres D en salud, y las estrategias de sostenibilidad energética que pueden reducir el consumo hospitalario hasta en un cuarenta por ciento.`,
+
+  'page-m7': `Módulo siete: Gestión y Dirección de Proyectos Hospitalarios. Diseñar bien no basta si no sabemos cómo hacer realidad el proyecto. Este módulo nos lleva al mundo de la gestión. Analizamos el ciclo de vida completo del proyecto hospitalario: desde el perfil de inversión en el sistema INVIERTE PE hasta la habilitación sanitaria ante la DIRESA o DISA. Estudiamos la estructura de costos: las instalaciones MEP representan entre el veinticinco y el treinta y cinco por ciento del costo total, una proporción muy superior a cualquier otro tipo de edificio. Abordamos las tres modalidades de inversión en infraestructura de salud: pública directa, Asociaciones Público Privadas, y privada directa, con sus marcos normativos respectivos. Y detallamos el proceso de habilitación sanitaria, que el arquitecto debe conocer desde el inicio del diseño para evitar observaciones costosas al final del proyecto.`,
+
+  'page-m8': `Módulo ocho: Proyecto Integrador Final. Hemos llegado al módulo culminante de la maestría. El Proyecto Integrador Final es la síntesis de todo lo aprendido: un proyecto real de infraestructura de salud desarrollado con rigor profesional, desde el diagnóstico de demanda hasta el anteproyecto definitivo con modelo BIM coordinado. Se desarrolla en cuatro etapas: diagnóstico y programación en las primeras cuatro semanas; concepto y anteproyecto entre las semanas cinco y diez; desarrollo técnico entre las semanas once y dieciséis; y presentación final ante jurado en las semanas diecisiete a veinte. El egresado de la Maestría en Arquitectura Hospitalaria de Interior Clinic estará en capacidad de diseñar establecimientos de todos los niveles de complejidad, coordinar proyectos con BIM, gestionar habilitaciones sanitarias y liderar equipos multidisciplinarios. El arquitecto hospitalario es uno de los profesionales con mayor impacto social: cada proyecto bien diseñado se traduce en vidas salvadas y en mejor calidad de atención para miles de peruanos.`
+};
 
 // ── Seleccionar la mejor voz en español ──────────
 function getSpanishVoice() {
@@ -1258,42 +1278,16 @@ function getSpanishVoice() {
   return voices.find(v => v.lang.startsWith('es')) || voices[0];
 }
 
-// ── Extraer texto limpio de la página activa ──────
-function getPageText(pageId) {
-  const section = document.getElementById(pageId);
-  if (!section) return '';
-
-  const walker = document.createTreeWalker(section, NodeFilter.SHOW_TEXT, {
-    acceptNode(node) {
-      const p = node.parentElement;
-      if (!p) return NodeFilter.FILTER_REJECT;
-      if (p.closest('.nav-buttons, .nav-btn, button'))
-        return NodeFilter.FILTER_REJECT;
-      const t = node.textContent.trim();
-      if (!t || t.length < 3) return NodeFilter.FILTER_REJECT;
-      return NodeFilter.FILTER_ACCEPT;
-    }
-  });
-
-  const parts = [];
-  let node;
-  while ((node = walker.nextNode())) {
-    const t = node.textContent.trim();
-    if (t) parts.push(t);
-  }
-  return parts.join(' ').replace(/\s+/g,' ').trim();
-}
-
 // ── Reproducir texto ──────────────────────────────
 function speakText(text) {
   if (!synth || !text) return;
-  stopVoice();
+  synth.cancel();
 
-  currentUtt          = new SpeechSynthesisUtterance(text);
-  currentUtt.lang     = 'es-PE';
-  currentUtt.rate     = speechRate;
-  currentUtt.pitch    = 1.0;
-  currentUtt.volume   = 1;
+  currentUtt       = new SpeechSynthesisUtterance(text);
+  currentUtt.lang  = 'es-PE';
+  currentUtt.rate  = speechRate;
+  currentUtt.pitch = 1.0;
+  currentUtt.volume = 1;
 
   if (!selectedVoice) selectedVoice = getSpanishVoice();
   if (selectedVoice) currentUtt.voice = selectedVoice;
@@ -1307,21 +1301,29 @@ function speakText(text) {
     document.getElementById('playBtn').classList.add('active');
   };
 
-  currentUtt.onend = currentUtt.onerror = () => {
+  currentUtt.onend = () => {
     isPlaying = false;
     document.getElementById('voiceIcon').classList.remove('speaking');
-    document.getElementById('voiceLabel').textContent  = 'Listo';
-    document.getElementById('playBtn').textContent     = '▶ Leer';
+    document.getElementById('voiceLabel').textContent = 'Listo';
+    document.getElementById('playBtn').textContent    = '▶ Leer';
+    document.getElementById('playBtn').classList.remove('active');
+  };
+
+  currentUtt.onerror = (e) => {
+    if (e.error === 'interrupted' || e.error === 'canceled') return;
+    isPlaying = false;
+    document.getElementById('voiceIcon').classList.remove('speaking');
+    document.getElementById('voiceLabel').textContent = 'Listo';
+    document.getElementById('playBtn').textContent    = '▶ Leer';
     document.getElementById('playBtn').classList.remove('active');
   };
 
   synth.speak(currentUtt);
 }
 
-// ── Leer página activa ────────────────────────────
+// ── Leer módulo activo con texto pregrabado ───────
 function readCurrentPage() {
-  stopVoice();
-  const text = getPageText(currentPage);
+  const text = moduleTexts[currentPage] || '';
   if (text) speakText(text);
 }
 
@@ -1346,11 +1348,11 @@ function togglePlay() {
 
 function stopVoice() {
   synth.cancel();
-  isPlaying = false;
+  isPlaying  = false;
   currentUtt = null;
   document.getElementById('voiceIcon').classList.remove('speaking');
-  document.getElementById('voiceLabel').textContent  = 'Listo';
-  document.getElementById('playBtn').textContent     = '▶ Leer';
+  document.getElementById('voiceLabel').textContent = 'Listo';
+  document.getElementById('playBtn').textContent    = '▶ Leer';
   document.getElementById('playBtn').classList.remove('active');
 }
 
@@ -1376,6 +1378,11 @@ if (synth.onvoiceschanged !== undefined) {
 window.addEventListener('beforeunload', () => synth.cancel());
 
 window.addEventListener('load', () => {
+  // Sincronizar slider con velocidad inicial
+  const slider = document.getElementById('speedRange');
+  if (slider) { slider.value = speechRate; }
+  document.getElementById('speedVal').textContent = speechRate.toFixed(1) + 'x';
+
   setTimeout(() => {
     selectedVoice = getSpanishVoice();
     if (voiceEnabled) readCurrentPage();

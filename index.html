@@ -1202,8 +1202,8 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;ove
   <div class="voice-controls">
     <div class="voice-speed">
       <span>Vel:</span>
-      <input type="range" id="speedRange" min="0.6" max="1.8" step="0.1" value="1.5" oninput="updateSpeed(this.value)">
-      <span id="speedVal">1.5x</span>
+      <input type="range" id="speedRange" min="0.6" max="1.8" step="0.1" value="1.2" oninput="updateSpeed(this.value)">
+      <span id="speedVal">1.2x</span>
     </div>
     <button class="vb-btn" id="playBtn" onclick="togglePlay()">▶ Leer</button>
     <button class="vb-btn stop-btn" onclick="stopVoice()">■ Stop</button>
@@ -1243,7 +1243,7 @@ const synth       = window.speechSynthesis;
 let currentUtt    = null;
 let voiceEnabled  = true;
 let selectedVoice = null;
-let speechRate    = 1.5;   // velocidad corregida
+let speechRate    = 1.2;   // velocidad corregida
 let isPlaying     = false;
 
 // ── Textos pregrabados por módulo (evita problemas con display:none en GitHub) ──
